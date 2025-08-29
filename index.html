@@ -32,13 +32,13 @@
       min-width: 120px;
     }
     .input-row input { 
-      flex: 1 0 120px; 
-      padding: 8px; 
+      flex: 1 0 80px; 
+      padding: 6px; 
       font-size: 1em; 
       border-radius: 5px; 
       border: none; 
     }
-    .output { font-weight: bold; margin: 15px 0; }
+    .output { font-weight: bold; margin: 15px 0; font-size: 1.3em; }
     .error { color: #ffcccb; white-space: pre-wrap; margin-top: 10px; }
     footer { 
       text-align: center; 
@@ -63,16 +63,16 @@
       <input id="elementHojde" type="number">
     </div>
     <div class="input-row">
+      <label for="offsetTop">Offset Top (mm):</label>
+      <input id="offsetTop" type="number">
+    </div>
+    <div class="input-row">
       <label for="elTopRor">EL Højde / Top eldåse (mm):</label>
       <input id="elTopRor" type="number">
     </div>
     <div class="input-row">
       <label for="offsetBund">Offset Bund (mm):</label>
       <input id="offsetBund" type="number">
-    </div>
-    <div class="input-row">
-      <label for="offsetTop">Offset Top (mm):</label>
-      <input id="offsetTop" type="number">
     </div>
 
     <div class="output" id="nedreRor">Nederste rør med dåse: - mm</div>
@@ -82,7 +82,7 @@
   <footer>Made by Lars Nielsen</footer>
 
   <script>
-    const felter = ['elementHojde','elTopRor','offsetBund','offsetTop'];
+    const felter = ['elementHojde','offsetTop','elTopRor','offsetBund'];
 
     // Hent gemte værdier fra LocalStorage
     felter.forEach(f => {
@@ -92,9 +92,9 @@
 
     function beregn() {
       const elementHojde = parseInt(document.getElementById('elementHojde').value) || 0;
+      const offsetTop = parseInt(document.getElementById('offsetTop').value) || 0;
       const elTopRor = parseInt(document.getElementById('elTopRor').value) || 0;
       const offsetBund = parseInt(document.getElementById('offsetBund').value) || 0;
-      const offsetTop = parseInt(document.getElementById('offsetTop').value) || 0;
 
       // Gem i LocalStorage
       felter.forEach(f => localStorage.setItem(f, document.getElementById(f).value));
