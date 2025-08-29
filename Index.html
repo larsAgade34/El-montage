@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El montage</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin: 50px; }
+    input { padding: 8px; margin: 5px; width: 150px; }
+    button { padding: 10px 20px; margin: 15px; }
+    p { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>El montage regnemaskine</h2>
+
+  <input id="felt1" placeholder="Felt 1"><br>
+  <input id="felt2" placeholder="Felt 2"><br>
+  <input id="felt3" placeholder="Felt 3"><br>
+  <input id="felt4" placeholder="Felt 4"><br>
+
+  <button onclick="beregn()">Beregn</button>
+
+  <p id="output1"></p>
+  <p id="output2"></p>
+
+  <script>
+    // Når siden indlæses → hent gemte værdier
+    window.onload = function() {
+      for (let i = 1; i <= 4; i++) {
+        let gemt = localStorage.getItem("felt"+i);
+        if (gemt) document.getElementById("felt"+i).value = gemt;
+      }
+    }
+
+    function beregn() {
+      // Gem input i LocalStorage
+      for (let i = 1; i <= 4; i++) {
+        localStorage.setItem("felt"+i, document.getElementById("felt"+i).value);
+      }
+
+      // Eksempel på beregning
+      let f1 = Number(document.getElementById("felt1").value);
+      let f2 = Number(document.getElementById("felt2").value);
+      let f3 = Number(document.getElementById("felt3").value);
+      let f4 = Number(document.getElementById("felt4").value);
+
+      let resultat1 = f1 + f2;   // fx sum af første to felter
+      let resultat2 = f3 * f4;   // fx produkt af sidste to felter
+
+      document.getElementById("output1").innerText = "Resultat 1: " + resultat1;
+      document.getElementById("output2").innerText = "Resultat 2: " + resultat2;
+    }
+  </script>
+</body>
+</html>
