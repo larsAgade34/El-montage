@@ -5,52 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El montage</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin: 50px; }
-    input { padding: 8px; margin: 5px; width: 150px; }
-    button { padding: 10px 20px; margin: 15px; }
-    p { font-weight: bold; }
+    body { font-family: sans-serif; margin: 20px; background-color: #4169E1; color: white; }
+    h1, h2 { text-align: center; }
+    .container { max-width: 400px; margin: auto; }
+    input { width: 100%; padding: 10px; margin: 5px 0; font-size: 1em; }
+    .output { font-weight: bold; margin: 10px 0; }
+    .error { color: #ffcccb; white-space: pre-wrap; margin-top: 10px; }
+    footer { text-align: center; margin-top: 20px; font-size: 0.8em; color: rgba(255,255,255,0.7); }
   </style>
 </head>
 <body>
-  <h2>El montage regnemaskine</h2>
+  <h1>El Rør Beregner</h1>
+  <div class="container">
+    <h2>Indtast Værdier:</h2>
+    <input id="elementHojde" type="number" placeholder="Element Højde (mm)">
+    <input id="elTopRor" type="number" placeholder="EL Højde / Top eldåse (mm)">
+    <input id="offsetBund" type="number" placeholder="Offset Bund (mm)">
+    <input id="offsetTop" type="number" placeholder="Offset Top (mm)">
 
-  <input id="felt1" placeholder="Felt 1"><br>
-  <input id="felt2" placeholder="Felt 2"><br>
-  <input id="felt3" placeholder="Felt 3"><br>
-  <input id="felt4" placeholder="Felt 4"><br>
-
-  <button onclick="beregn()">Beregn</button>
-
-  <p id="output1"></p>
-  <p id="output2"></p>
+    <div class="output" id="nedreRor">Nederste rør med dåse: - mm</div>
+    <div class="output" id="ovreRor">Øverste rør til dåse: - mm</div>
+    <div class="error" id="errorText"></div>
+  </div>
+  <footer>Made by Lars Nielsen</footer>
 
   <script>
-    // Når siden indlæses → hent gemte værdier
-    window.onload = function() {
-      for (let i = 1; i <= 4; i++) {
-        let gemt = localStorage.getItem("felt"+i);
-        if (gemt) document.getElementById("felt"+i).value = gemt;
-      }
-    }
+    const felter = ['elementHojde','elTopRor','offsetBund','offsetTop'];
+
+    // Hent gemte værdier fra LocalStorage
+    felter.forEach(f => {
+      const val = localStorage.getItem(f);
+      if(val) document.getElementById(f).value = val;
+    });
 
     function beregn() {
-      // Gem input i LocalStorage
-      for (let i = 1; i <= 4; i++) {
-        localStorage.setItem("felt"+i, document.getElementById("felt"+i).value);
-      }
+      const elementHojde = parseInt(document.getElementById('elementHojde').value) || 0;
+      const elTopRor = parseInt(document.getElementById('elTopRor').value) || 0;
+      const offsetBund = parseInt(document.getElementById('offsetBund').value) || 0;
+      const offsetTop = parseInt(document.getElementById('offsetTop').value) || 0;
 
-      // Eksempel på beregning
-      let f1 = Number(document.getElementById("felt1").value);
-      let f2 = Number(document.getElementById("felt2").value);
-      let f3 = Number(document.getElementById("felt3").value);
-      let f4 = Number(document.getElementById("felt4").value);
+      // Gem i LocalStorage
+      felter.forEach(f => localStorage.setItem(f, document.getElementById(f).value));
 
-      let resultat1 = f1 + f2;   // fx sum af første to felter
-      let resultat2 = f3 * f4;   // fx produkt af sidste to felter
+      // Validering
+      let errors = '';
+      if(elementHojde <=0) errors += 'Element Højde skal være positiv.\n';
+      if(elTopRor <=0) errors += 'EL Højde skal være positiv.\n';
+      if(offsetBund <0) errors += 'Offset Bund kan ikke være negativ.\n';
+      if(offsetTop <0) errors += 'Offset Top kan ikke være negativ.\n';
+      if(elTopRor >= elementHojde) errors += 'EL Højde kan ikke være større end eller lig med Element Højde.\n';
 
-      document.getElementById("output1").innerText = "Resultat 1: " + resultat1;
-      document.getElementById("output2").innerText = "Resultat 2: " + resultat2;
+      // Beregninger
+      const nedreRor = elTopRor - offsetBund;
+      const ovreRor = elementHojde - elTopRor - offsetTop;
+
+      // Opdater output
+      document.getElementById('nedreRor').textContent = 'Nederste rør med dåse: ' + nedreRor + ' mm';
+      document.getElementById('ovreRor').textContent = 'Øverste rør til dåse: ' + ovreRor + ' mm';
+      document.getElementById('errorText').textContent = errors;
     }
+
+    // Beregn live ved ændringer på inputfelter
+    felter.forEach(f => {
+      document.getElementById(f).addEventListener('input', beregn);
+    });
+
+    // Beregn en gang ved load
+    beregn();
   </script>
 </body>
 </html>
